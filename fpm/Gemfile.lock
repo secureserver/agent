@@ -1,7 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.2.7)
     addressable (2.3.6)
     arr-pm (0.0.9)
       cabin (> 0)
@@ -10,8 +9,7 @@ GEM
     childprocess (0.5.3)
       ffi (~> 1.0, >= 1.0.11)
     clamp (0.6.3)
-    facter (2.0.1)
-      CFPropertyList (~> 2.2.6)
+    facter (1.7.5)
     ffi (1.9.3)
     fpm (0.4.42)
       arr-pm (~> 0.0.8)
@@ -49,4 +47,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  facter (= 1.7.5)
   fpm-cookery (= 0.16.2)
