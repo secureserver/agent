@@ -1,0 +1,9 @@
+fpm/bin/
+fpm/.bundle
+fpm/.vagrant
+fpm/ldd.out
+fpm/pkg/
+fpm/cache/
+fpm/tmp-build/
+fpm/tmp-dest/
+fpm/vendor/
