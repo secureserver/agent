@@ -19,9 +19,9 @@
   def build
     destdir.mkdir
     if Facter.operatingsystem == 'Debian' || Facter.operatingsystem == 'Ubuntu'
-      cp "#{workdir}/../ubuntu.sh", destdir('/secureserver-agent')
+      cp "#{workdir}/../scripts/ubuntu_agent.sh", destdir('/secureserver-agent')
     elsif Facter.operatingsystem == 'CentOS' || Facter.operatingsystem == 'RedHat' || Facter.operatingsystem == 'Fedora'
-      cp "#{workdir}/../rhel.sh", destdir('/secureserver-agent')
+      cp "#{workdir}/../scripts/rhel_agent.sh", destdir('/secureserver-agent')
     end
   end
 
@@ -45,7 +45,7 @@
 
 	def install_files
 	  etc('secureserver').mkdir
-	  etc('init.d').install workdir('../agent.init.sh') => 'secureserver-agent'
+	  etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
 	  chmod 0755, etc('init.d/secureserver-agent')
 	end
 
