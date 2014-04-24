@@ -17,15 +17,15 @@ packages=()
 
 for pkg in $pkg_upgrade
 do
-name=$(echo $pkg | cut -d' ' -f2)
+    name=$(echo $pkg | cut -d' ' -f2)
     version=$(echo $pkg | cut -d'[' -f2 | cut -d']' -f1)
     version_update=$(echo $pkg | awk -F'[()]' '{print $2}' | cut -d' ' -f1)
 
-packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s"},' \
-                           "$name" "$version" "$version_update")
+    packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s"},' \
+                         "$name" "$version" "$version_update")
 done
 
 packages=$(sed 's/},$/}/g' <<< $packages)
 
 printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-       "$os_name" "$os_release" "$os_codename" "$hostname" "$packages"
+         "$os_name" "$os_release" "$os_codename" "$hostname" "$packages"
