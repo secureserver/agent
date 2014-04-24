@@ -6,6 +6,8 @@
 
   source "nothing", :with => :noop
 
+  require 'facter'
+
   platforms [:ubuntu, :debian] do
   	#potential dependencies
   end
@@ -16,7 +18,11 @@
 
   def build
     destdir.mkdir
-    cp "#{workdir}/../agent.sh", destdir('/secureserver-agent')
+    if Facter.operatingsystem == 'Debian' || Facter.operatingsystem == 'Ubuntu'
+      cp "#{workdir}/../ubuntu.sh", destdir('/secureserver-agent')
+    elsif Facter.operatingsystem == 'CentOS' || Facter.operatingsystem == 'RedHat' || Facter.operatingsystem == 'Fedora'
+      cp "#{workdir}/../rhel.sh", destdir('/secureserver-agent')
+    end
   end
 
   def install
