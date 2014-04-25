@@ -16,6 +16,8 @@
     #potential dependencies
   end
 
+  depends 'curl'
+
   def build
     destdir.mkdir
     if Facter.operatingsystem == 'Debian' || Facter.operatingsystem == 'Ubuntu'
