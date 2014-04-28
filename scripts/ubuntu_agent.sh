@@ -9,7 +9,13 @@ endpoint="https://test.com"
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
 os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
-hostname=$(hostname)
+
+if hostname -f > /dev/null 2>&1
+then 
+    hostname=$(hostname -f)
+else
+    hostname=$(hostname)
+fi
 
 IFS=$'\n'
 pkg_upgrade=$(apt-get upgrade -s | grep ^Inst)

@@ -9,7 +9,13 @@ endpoint="https://test.com"
 os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')
 #os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
-hostname=$(hostname)
+
+if hostname -f > /dev/null 2>&1
+then
+    hostname=$(hostname -f)
+else
+    hostname=$(hostname)
+fi
 
 IFS=$'\n'
 pkg_upgrade=$(yum list updates -q | grep -v "Updated Packages")
