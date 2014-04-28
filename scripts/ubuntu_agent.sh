@@ -4,14 +4,14 @@
 # SecureServer
 #
 #===============================================================================
-endpoint="https://test.com"
+endpoint=""
 
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
 os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 
 if hostname -f > /dev/null 2>&1
-then 
+then
     hostname=$(hostname -f)
 else
     hostname=$(hostname)
@@ -33,9 +33,10 @@ do
     name=$(echo "$pkg" | awk '{print $2}')
     version=$(echo "$pkg" | cut -d'[' -f2 | cut -d']' -f1)
     version_update=$(echo "$pkg" | awk -F'[()]' '{print $2}' | cut -d' ' -f1)
+    repo=$(echo "$pkg" | awk '{print $5}')
 
-    packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s"},' \
-                         "$name" "$version" "$version_update")
+    packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s","repo":"%s"},' \
+                         "$name" "$version" "$version_update" "$repo")
 done
 
 packages=$(sed 's/},$/}/g' <<< "$packages")
@@ -43,6 +44,6 @@ packages=$(sed 's/},$/}/g' <<< "$packages")
 response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
                     "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 
-#curl -d "$response" -i "$endpoint"
+#curl -d "$response" -i "$endpoint" > /dev/null 2>&1
 
 echo "$response"
