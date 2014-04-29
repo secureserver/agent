@@ -47,6 +47,7 @@
 
 	def install_files
 	  etc('secureserver').mkdir
+    etc('secureserver').install workdir('../etc/agent.config') => 'agent.config'
 	  etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
 	  chmod 0755, etc('init.d/secureserver-agent')
 	end

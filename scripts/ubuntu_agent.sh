@@ -4,7 +4,9 @@
 # SecureServer
 #
 #===============================================================================
-endpoint=""
+
+# load the agent configuration file
+[ -r /etc/secureserver/agent.config ] && . /etc/secureserver/agent.config
 
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
@@ -44,6 +46,6 @@ packages=$(sed 's/},$/}/g' <<< "$packages")
 response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
                     "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 
-#curl -d "$response" -i "$endpoint" > /dev/null 2>&1
+#curl -d "$response" -i "$service_endpoint" > /dev/null 2>&1
 
 echo "$response"
