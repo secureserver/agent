@@ -19,33 +19,42 @@ else
     hostname=$(hostname)
 fi
 
-last_update=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
-current_time=$(date +%s)
-if [ $(( current_time - last_update )) -ge 86400 ]
-then
-    apt-get -qq update
-fi
+function check_packages()
+{
+    last_update=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
+    current_time=$(date +%s)
+    if [ $(( current_time - last_update )) -ge 86400 ]
+    then
+        apt-get -qq update
+    fi
 
-IFS=$'\n'
-pkg_upgrade=$(apt-get upgrade -s | grep ^Inst)
-packages=()
+    IFS=$'\n'
+    pkg_upgrade=$(apt-get upgrade -s | grep ^Inst)
+    packages=()
 
-for pkg in $pkg_upgrade
-do
-    name=$(echo "$pkg" | awk '{print $2}')
-    version=$(echo "$pkg" | cut -d'[' -f2 | cut -d']' -f1)
-    version_update=$(echo "$pkg" | awk -F'[()]' '{print $2}' | cut -d' ' -f1)
-    repo=$(echo "$pkg" | awk '{print $5}')
+    for pkg in $pkg_upgrade
+    do
+        name=$(echo "$pkg" | awk '{print $2}')
+        version=$(echo "$pkg" | cut -d'[' -f2 | cut -d']' -f1)
+        version_update=$(echo "$pkg" | awk -F '[()]' '{print $2}' | cut -d' ' -f1)
+        repo=$(echo "$pkg" | awk '{print $5}')
 
-    packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s","repo":"%s"},' \
-                         "$name" "$version" "$version_update" "$repo")
+        packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s","repo":"%s"},' \
+                             "$name" "$version" "$version_update" "$repo")
+    done
+
+    packages=$(sed 's/},$/}/g' <<< "$packages")
+
+    response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
+                        "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
+
+
+}
+# infinite loop which will keep the agent daemonized
+while true; do
+    check_packages
+    curl -d "$response" -i "$service_endpoint" > /dev/null 2>&1
+    sleep ${report_frequency}
 done
-
-packages=$(sed 's/},$/}/g' <<< "$packages")
-
-response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-                    "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
-
-#curl -d "$response" -i "$service_endpoint" > /dev/null 2>&1
 
 echo "$response"
