@@ -19,7 +19,7 @@ fi
 
 last_update=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
 current_time=$(date +%s)
-if [ $(( $current_time - $last_update )) -ge 86400 ]
+if [ $(( current_time - last_update )) -ge 86400 ]
 then
     apt-get -qq update
 fi
