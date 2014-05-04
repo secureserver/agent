@@ -29,7 +29,7 @@ function check_packages()
     for pkg in $pkg_upgrade
     do
         name=$(echo "$pkg" | cut -d'.' -f1 )
-        version=$(echo "$pkg_installed" | grep "^${name}-[0-9]" | sed -e "s/^${name}-//g" -e "s/.[^.]*$//g")    
+        version=$(echo "$pkg_installed" | grep "^${name}-[0-9]" | sed -e "s/^${name}-//g" -e "s/.[^.]*$//g")
         version_update=$(echo "$pkg" | awk '{print $2}')
 
         packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s"},' \
