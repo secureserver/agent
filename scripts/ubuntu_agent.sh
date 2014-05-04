@@ -48,13 +48,13 @@ function check_packages()
     response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
                         "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 
-
 }
+
 # infinite loop which will keep the agent daemonized
-while true; do
+while true
+do
     check_packages
     curl -d "$response" -i "$service_endpoint" > /dev/null 2>&1
-    sleep ${report_frequency}
+    sleep "$report_frequency"
 done
 
-echo "$response"
