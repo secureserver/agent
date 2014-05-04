@@ -33,7 +33,7 @@ function check_packages()
         version_update=$(echo "$pkg" | awk '{print $2}')
 
         packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s"},' \
-	                     "$name" "$version" "$version_update")
+                             "$name" "$version" "$version_update")
     done
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
