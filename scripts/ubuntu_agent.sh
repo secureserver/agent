@@ -47,7 +47,6 @@ function check_packages()
 
     response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
                         "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
-
 }
 
 # infinite loop which will keep the agent daemonized
