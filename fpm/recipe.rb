@@ -1,5 +1,5 @@
 class SecureserverAgent < FPM::Cookery::Recipe
-  homepage 'https://github.com/andytinycat/puppet-omnibus'
+  homepage 'https://github.com/secureserver/agent'
 
   section 'Utilities'
   name 'secureserver-agent'
@@ -18,7 +18,8 @@ class SecureserverAgent < FPM::Cookery::Recipe
   omnibus_recipes 'agent'
 
   # Set up paths to initscript and config files per platform
-  config_files '/etc/init.d/secureserver-agent'
+  config_files '/etc/init.d/secureserver-agent',
+               '/etc/secureserver/agent.config'
 
   omnibus_additional_paths config_files
 
