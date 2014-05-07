@@ -1,0 +1,6 @@
+[secureserver]
+name=secureserver packages for Enterprise Linux
+baseurl=http://dl.bintray.com/secureserver/secureserver-rpm
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-secureserver
+enabled=1

@@ -46,6 +46,7 @@
 
 
 	def install_files
+    require 'debugger'; debugger
 	  etc('secureserver').mkdir
     etc('secureserver').install workdir('../etc/agent.config') => 'agent.config'
 	  etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
