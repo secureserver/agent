@@ -31,9 +31,10 @@ function check_packages()
         name=$(echo "$pkg" | cut -d'.' -f1 )
         version=$(echo "$pkg_installed" | grep "^${name}-[0-9]" | sed -e "s/^${name}-//g" -e "s/.[^.]*$//g")
         version_update=$(echo "$pkg" | awk '{print $2}')
+        repo=$(echo "$pkg" | awk '{print $3}')
 
-        packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s"},' \
-                             "$name" "$version" "$version_update")
+        packages+=$(printf '{"name":"%s","version":"%s","version_update":"%s","repo":"%s"},' \
+                             "$name" "$version" "$version_update" "$repo")
     done
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
