@@ -25,6 +25,8 @@
     elsif Facter.operatingsystem == 'CentOS' || Facter.operatingsystem == 'RedHat' || Facter.operatingsystem == 'Fedora'
       cp "#{workdir}/../scripts/rhel_agent.sh", destdir('/secureserver-agent')
     end
+    # install the config script
+    cp "#{workdir}/../scripts/secureserver-config.sh", destdir('/secureserver-config')
   end
 
   def install
@@ -34,6 +36,7 @@
     # Provide 'safe' binaries in /opt/<package>/bin like Vagrant does
     destdir('../bin').mkdir
     destdir('../bin').install workdir('omnibus.bin'), 'secureserver-agent'
+    destdir('../bin').install workdir('omnibus.bin'), 'secureserver-config'
 
     # Symlink binaries to PATH using update-alternatives
     with_trueprefix do
@@ -46,7 +49,6 @@
 
 
 	def install_files
-    require 'debugger'; debugger
 	  etc('secureserver').mkdir
     etc('secureserver').install workdir('../etc/agent.config') => 'agent.config'
 	  etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
@@ -62,7 +64,7 @@
 set -e
 
 BIN_PATH="#{destdir}"
-BINS="secureserver-agent"
+BINS="secureserver-agent secureserver-config"
 
 for BIN in $BINS; do
   update-alternatives --install /usr/bin/$BIN $BIN $BIN_PATH/$BIN 100
@@ -80,7 +82,7 @@ exit 0
 set -e
 
 BIN_PATH="#{destdir}"
-BINS="secureserver-agent"
+BINS="secureserver-agent secureserver-config"
 
 if [ "$1" != "upgrade" ]; then
   for BIN in $BINS; do
