@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #===============================================================================
 #
-# SecureServer
-#
+# MAINTAINER: secureserver.io
+# 
 #===============================================================================
 
 # load the agent configuration file
@@ -12,6 +12,7 @@ os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')
 #os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 
+# get the hostname or fqdn if exists
 if hostname -f > /dev/null 2>&1
 then
     hostname=$(hostname -f)

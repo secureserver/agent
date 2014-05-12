@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #===============================================================================
 #
-# SecureServer
+# MAINTAINER: secureserver.io
 #
 #===============================================================================
 
@@ -12,6 +12,7 @@ os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
 os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 
+# get the hostname or fqdn if exists
 if hostname -f > /dev/null 2>&1
 then
     hostname=$(hostname -f)
