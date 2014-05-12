@@ -34,9 +34,9 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 do_start()
 {
-    start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE 
+    start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
                       --exec $DAEMON --test > /dev/null || return 1
-    start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE 
+    start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
                       --exec $DAEMON -- $DAEMON_ARGS || return 2
 }
 
@@ -45,7 +45,7 @@ do_stop()
     start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE
     RETVAL="$?"
     [ "$RETVAL" = 2 ] && return 2
-    
+
     start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
     [ "$?" = 2 ] && return 2
     rm -f $PIDFILE
