@@ -1,4 +1,4 @@
- class PuppetGem < FPM::Cookery::Recipe
+class PuppetGem < FPM::Cookery::Recipe
   description 'secureserver agent'
 
   name 'agent'
@@ -9,11 +9,11 @@
   require 'facter'
 
   platforms [:ubuntu, :debian] do
-  	#potential dependencies
+    # Potential dependencies
   end
 
   platforms [:fedora, :redhat, :centos] do
-    #potential dependencies
+    # Potential dependencies
   end
 
   depends 'curl'
@@ -25,7 +25,7 @@
     elsif Facter.operatingsystem == 'CentOS' || Facter.operatingsystem == 'RedHat' || Facter.operatingsystem == 'Fedora'
       cp "#{workdir}/../scripts/rhel_agent.sh", destdir('/secureserver-agent')
     end
-    # install the config script
+    # Install the config script
     cp "#{workdir}/../scripts/secureserver-config.sh", destdir('/secureserver-config')
   end
 
@@ -47,15 +47,12 @@
 
   private
 
-
-	def install_files
-	  etc('secureserver').mkdir
+  def install_files
+    etc('secureserver').mkdir
     etc('secureserver').install workdir('../etc/agent.config') => 'agent.config'
-	  etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
-	  chmod 0755, etc('init.d/secureserver-agent')
-	end
-
-
+    etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
+    chmod 0755, etc('init.d/secureserver-agent')
+  end
 
   def create_post_install_hook
     File.open(builddir('post-install'), 'w', 0755) do |f|
@@ -94,5 +91,4 @@ exit 0
       __PRERM
     end
   end
-
 end

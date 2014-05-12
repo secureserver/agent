@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 #===============================================================================
 #
-# SecureServer
+# MAINTAINER: secureserver.io
 #
 #===============================================================================
 args=("$@")
 
-# check if config file is readable
+# Check if config file is readable
 [ ! -r /etc/secureserver/agent.config ] && exit 1
 
-# get keys from agent config file
+# Get keys from agent config file
 config_keys=$(grep '^[a-z].*' /etc/secureserver/agent.config | cut -d= -f1)
 
-# check number of arguments
+# Check number of arguments
 if [ ! "${#args[@]}" -eq 2 ]
 then
     echo -e "\nUSAGE: secureserver-config --set key=value"
@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-# get option, key and value parameters
+# Get option, key and value parameters
 option="$1"
 key=$(echo "$2" | cut -d= -f1)
 value=$(echo "$2" | cut -d= -f2 -s)

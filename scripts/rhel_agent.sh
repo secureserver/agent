@@ -5,14 +5,14 @@
 # 
 #===============================================================================
 
-# load the agent configuration file
+# Load the agent configuration file
 [ -r /etc/secureserver/agent.config ] && . /etc/secureserver/agent.config
 
 os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')
 #os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 
-# get the hostname or fqdn if exists
+# Get the hostname or fqdn if exists
 if hostname -f > /dev/null 2>&1
 then
     hostname=$(hostname -f)
@@ -44,7 +44,7 @@ function check_packages()
                         "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
-# infinite loop which will keep the agent daemonized
+# Infinite loop which will keep the agent daemonized
 while true
 do
     check_packages

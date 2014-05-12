@@ -5,14 +5,14 @@
 #
 #===============================================================================
 
-# load the agent configuration file
+# Load the agent configuration file
 [ -r /etc/secureserver/agent.config ] && . /etc/secureserver/agent.config
 
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
 os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 
-# get the hostname or fqdn if exists
+# Get the hostname or fqdn if exists
 if hostname -f > /dev/null 2>&1
 then
     hostname=$(hostname -f)
@@ -26,7 +26,7 @@ function check_packages()
     current_time=$(date +%s)
     if [ $(( current_time - last_update )) -ge 86400 ]
     then
-        apt-get -qq update
+        #apt-get -qq update
     fi
 
     IFS=$'\n'
@@ -50,7 +50,7 @@ function check_packages()
                         "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
-# infinite loop which will keep the agent daemonized
+# Infinite loop which will keep the agent daemonized
 while true
 do
     check_packages
