@@ -44,10 +44,8 @@ function check_packages()
                        "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
-# Infinite loop which will keep the agent daemonized
-while true
-do
-    check_packages
+function send_packages()
+{
     request_check=$(echo -n "$request" | md5sum | cut -c 1-32)
 
     if [ -z "$previous_request_check" ] || [ "$request_check" != "$previous_request_check" ]
@@ -56,6 +54,13 @@ do
              -d "$request" -i "$service_endpoint" > /dev/null 2>&1
         previous_request_check="$request_check"
     fi
+}
+
+# Infinite loop which will keep the agent daemonized
+while true
+do
+    check_packages
+    send_packages
     sleep "$report_frequency"
 done
 
