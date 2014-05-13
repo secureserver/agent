@@ -40,7 +40,7 @@ function check_packages()
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
-    response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
+    request=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
                         "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
@@ -48,7 +48,14 @@ function check_packages()
 while true
 do
     check_packages
-    curl -d "$response" -i "$service_endpoint" > /dev/null 2>&1
+    request_check=$(echo -n "$request" | md5sum | cut -c 1-32)
+
+    if [ -z "$previous_request_check" ] || [ "$request_check" != "$previous_request_check" ]
+    then
+        curl --connect-timeout "$connect_timeout" --max-time "$max_time" \
+             -d "$request" -i "$service_endpoint" > /dev/null 2>&1
+        previous_request_check="$request_check"
+    fi
     sleep "$report_frequency"
 done
 

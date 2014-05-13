@@ -22,12 +22,12 @@ fi
 
 function check_packages()
 {
-    last_update=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
-    current_time=$(date +%s)
-    if [ $(( current_time - last_update )) -ge 86400 ]
-    then
+    #last_update=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
+    #current_time=$(date +%s)
+    #if [ $(( current_time - last_update )) -ge 86400 ]
+    #then
         #apt-get -qq update
-    fi
+    #fi
 
     IFS=$'\n'
     pkg_upgrade=$(apt-get upgrade -s | grep ^Inst)
@@ -46,15 +46,22 @@ function check_packages()
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
-    response=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-                        "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
+    request=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
+                       "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
 # Infinite loop which will keep the agent daemonized
 while true
 do
     check_packages
-    curl -d "$response" -i "$service_endpoint" > /dev/null 2>&1
+    request_check=$(echo -n "$request" | md5sum | cut -c 1-32)
+
+    if [ -z "$previous_request_check" ] || [ "$request_check" != "$previous_request_check" ]
+    then
+        curl --connect-timeout "$connect_timeout" --max-time "$max_time" \
+             -d "$request" -i "$service_endpoint" > /dev/null 2>&1
+        previous_request_check="$request_check"
+    fi
     sleep "$report_frequency"
 done
 
