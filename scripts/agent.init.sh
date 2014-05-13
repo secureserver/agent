@@ -91,11 +91,11 @@ case "$1" in
                 esac
                 ;;
             *)
-	        # Failed to stop
-	        log_end_msg 1
-	        ;;
-	esac
-	;;
+                # Failed to stop
+                log_end_msg 1
+                ;;
+        esac
+        ;;
     *)
         echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
         exit 3
