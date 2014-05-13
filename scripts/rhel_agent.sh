@@ -41,7 +41,7 @@ function check_packages()
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
     request=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-                        "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
+                       "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
 # Infinite loop which will keep the agent daemonized
