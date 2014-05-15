@@ -6,7 +6,6 @@ class RpmRepo < FPM::Cookery::Recipe
   version '1'
   description 'secureserver rpm repo package'
   revision 0
-  vendor 'fpm'
   arch    'noarch'
   maintainer '<dario.duvnjak@gmail.com>'
   license 'MIT License'

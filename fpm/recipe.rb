@@ -4,9 +4,8 @@ class SecureserverAgent < FPM::Cookery::Recipe
   section 'Utilities'
   name 'secureserver-agent'
   version '0.0.1'
-  description 'secureserver Agent package'
+  description 'secureserver agent package'
   revision 0
-  vendor 'fpm'
   arch    'noarch'
   maintainer '<dario.duvnjak@gmail.com>'
   license 'MIT License'
