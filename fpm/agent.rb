@@ -60,12 +60,27 @@ class PuppetGem < FPM::Cookery::Recipe
 #!/bin/sh
 set -e
 
-BIN_PATH="#{destdir}"
-BINS="secureserver-agent secureserver-config"
+bin_path="#{destdir}"
+bins="secureserver-agent secureserver-config"
+user="secureserver"
+group="secureserver"
 
-for BIN in $BINS; do
-  update-alternatives --install /usr/bin/$BIN $BIN $BIN_PATH/$BIN 100
+for bin in $bins
+do
+    update-alternatives --install /usr/bin/"$bin" "$bin" "$bin_path"/"$bin" 100
 done
+
+if ! getent group "$group" > /dev/null 2>&1
+then
+    addgroup --system "$group" --quiet
+fi
+
+if ! id "$user" > /dev/null 2>&1
+then
+    adduser --system --no-create-home \
+            --ingroup "$group" --disabled-password \
+            --shell /bin/false "$user"
+fi
 
 exit 0
       __POSTINST
@@ -78,14 +93,20 @@ exit 0
 #!/bin/sh
 set -e
 
-BIN_PATH="#{destdir}"
-BINS="secureserver-agent secureserver-config"
+bin_path="#{destdir}"
+bins="secureserver-agent secureserver-config"
+user="secureserver"
+group="secureserver"
 
-if [ "$1" != "upgrade" ]; then
-  for BIN in $BINS; do
-    update-alternatives --remove $BIN $BIN_PATH/$BIN
-  done
+if [ "$1" != "upgrade" ]
+then
+    for bin in $bins; do
+        update-alternatives --remove "$bin" "$bin_path"/"$bin"
+    done
 fi
+
+deluser "$user" || true
+delgroup "$group" || true
 
 exit 0
       __PRERM
