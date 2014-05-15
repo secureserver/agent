@@ -11,12 +11,14 @@
 # Author: secureserver.io
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="secureserver.io agent"
+DESC="secureserver agent"
 NAME=secureserver-agent
 DAEMON=/opt/secureserver-agent/embedded/secureserver-agent
 DAEMON_ARGS=""
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
+USER=secureserver
+GROUP=secureserver
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
@@ -35,9 +37,9 @@ SCRIPTNAME=/etc/init.d/$NAME
 do_start()
 {
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
-                      --exec $DAEMON --test > /dev/null || return 1
+                      --exec $DAEMON -c $USER:$GROUP --test > /dev/null || return 1
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
-                      --exec $DAEMON -- $DAEMON_ARGS || return 2
+                      --exec $DAEMON -c $USER:$GROUP -- $DAEMON_ARGS || return 2
 }
 
 do_stop()
