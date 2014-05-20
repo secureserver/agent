@@ -1,8 +1,11 @@
 #! /bin/sh
+#
 ### BEGIN INIT INFO
-# Provides:          secureserver
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Provides:          secureserver-agent
+# Required-Start:    $network $local_fs $remote_fs
+# Required-Stop:     $remote_fs
+# Should-Start:      $named
+# Should-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Starts the secureserver agent.
@@ -34,8 +37,29 @@ GROUP=secureserver
 # and status_of_proc is working.
 . /lib/lsb/init-functions
 
+config_file="/etc/secureserver/agent.config"
+
+print_message()
+{
+    cat <<EOF
+*********************************************************************
+*********************************************************************
+***
+***
+*********************************************************************
+*********************************************************************
+EOF
+}
+
 do_start()
 {
+    # Check if api key is added
+    if [ $(grep -c "REPLACE_WITH_YOUR_KEY" "$config_file") -eq 1 ]
+    then
+        print_message
+        exit 1
+    fi
+
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
                       --exec $DAEMON -c $USER:$GROUP --test > /dev/null || return 1
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
