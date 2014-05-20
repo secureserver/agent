@@ -42,12 +42,20 @@ config_file="/etc/secureserver/agent.config"
 print_message()
 {
     cat <<EOF
-*********************************************************************
-*********************************************************************
-***
-***
-*********************************************************************
-*********************************************************************
+
+#####################################################################
+
+    Before starting a secureserver-agent you need a valid api key    
+    in the configuration file:
+    
+        /etc/secureserver/agent.config
+
+    You can set key by running the following command:
+
+    secureserver-config --set api_key=<your_api_key_here>
+
+#####################################################################
+
 EOF
 }
 
