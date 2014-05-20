@@ -11,14 +11,7 @@
 os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')
 #os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
-
-# Get the hostname or fqdn if exists
-if hostname -f > /dev/null 2>&1
-then
-    hostname=$(hostname -f)
-else
-    hostname=$(hostname)
-fi
+hostname=$(hostname)
 
 function check_packages()
 {
