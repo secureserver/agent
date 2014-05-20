@@ -72,13 +72,13 @@ done
 
 if ! getent group "$group" > /dev/null 2>&1
 then
-    addgroup --system "$group" --quiet
+    groupadd --system "$group"
 fi
 
 if ! id "$user" > /dev/null 2>&1
 then
-    adduser --system --no-create-home \
-            --ingroup "$group" --disabled-password \
+    useradd --system --no-create-home \
+            --gid "$group" \
             --shell /bin/false "$user"
 fi
 
@@ -105,8 +105,7 @@ then
     done
 fi
 
-deluser "$user" || true
-delgroup "$group" || true
+userdel "$user" || true
 
 exit 0
       __PRERM
