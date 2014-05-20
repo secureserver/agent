@@ -50,7 +50,11 @@ class PuppetGem < FPM::Cookery::Recipe
   def install_files
     etc('secureserver').mkdir
     etc('secureserver').install workdir('../etc/agent.config') => 'agent.config'
-    etc('init.d').install workdir('../scripts/agent.init.sh') => 'secureserver-agent'
+    if Facter.operatingsystem == 'Debian' || Facter.operatingsystem == 'Ubuntu'
+      etc('init.d').install workdir('../scripts/ubuntu_agent.init.sh') => 'secureserver-agent'
+    elsif Facter.operatingsystem == 'CentOS' || Facter.operatingsystem == 'RedHat' || Facter.operatingsystem == 'Fedora'
+      etc('init.d').install workdir('../scripts/rhel_agent.init.sh') => 'secureserver-agent'
+    end
     chmod 0755, etc('init.d/secureserver-agent')
   end
 
