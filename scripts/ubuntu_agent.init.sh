@@ -134,4 +134,3 @@ case "$1" in
         exit 3
         ;;
 esac
-:
