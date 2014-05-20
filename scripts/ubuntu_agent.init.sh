@@ -17,7 +17,6 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="secureserver agent"
 NAME=secureserver-agent
 DAEMON=/opt/secureserver-agent/embedded/secureserver-agent
-DAEMON_ARGS=""
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=secureserver
@@ -71,7 +70,7 @@ do_start()
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
                       --exec $DAEMON -c $USER:$GROUP --test > /dev/null || return 1
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
-                      --exec $DAEMON -c $USER:$GROUP -- $DAEMON_ARGS || return 2
+                      --exec $DAEMON -c $USER:$GROUP || return 2
 }
 
 do_stop()

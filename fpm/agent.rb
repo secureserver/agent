@@ -76,11 +76,13 @@ done
 
 if ! getent group "$group" > /dev/null 2>&1
 then
+    echo "Adding new group '$group' ..."
     groupadd --system "$group"
 fi
 
 if ! id "$user" > /dev/null 2>&1
 then
+    echo "Adding new user '$user' with group '$group' ..."
     useradd --system --no-create-home --gid "$group" --shell /bin/false "$user"
 fi
 
