@@ -22,6 +22,10 @@ class SecureserverAgent < FPM::Cookery::Recipe
 
   omnibus_additional_paths config_files
 
+  platforms [:fedora, :redhat, :centos] do
+    build_depends 'rpmdevtools'
+  end
+
   def build
     # Nothing
   end
