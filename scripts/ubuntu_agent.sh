@@ -5,6 +5,9 @@
 #
 #===============================================================================
 
+# Kill sleep when parent stops
+trap '[ $pid ] && kill $pid' EXIT
+
 # Load the agent configuration file
 [ -r /etc/secureserver/agent.config ] && . /etc/secureserver/agent.config
 
@@ -60,6 +63,7 @@ while true
 do
     check_packages
     send_packages
-    sleep "$report_frequency"
+    sleep "$report_frequency" & pid=$!
+    wait
 done
 
