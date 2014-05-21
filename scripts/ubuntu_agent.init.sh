@@ -11,8 +11,6 @@
 # Short-Description: Starts the secureserver agent.
 ### END INIT INFO
 
-# Author: secureserver.io
-
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="secureserver agent"
 NAME=secureserver-agent
@@ -51,7 +49,7 @@ print_message()
 
     You can set key by running the following command:
 
-    secureserver-config --set api_key=<your_api_key_here>
+    secureserver-config --set api_key=REPLACE_WITH_YOUR_API_KEY
 
 #####################################################################
 
@@ -61,7 +59,7 @@ EOF
 do_start()
 {
     # Check if api key is added
-    if [ $(grep -c "REPLACE_WITH_YOUR_KEY" "$config_file") -eq 1 ]
+    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$config_file") -eq 1 ]
     then
         print_message
         exit 1

@@ -69,39 +69,40 @@ bins="secureserver-agent secureserver-config"
 user="secureserver"
 group="secureserver"
 
-for bin in $bins
-do
-    update-alternatives --install /usr/bin/"$bin" "$bin" "$bin_path"/"$bin" 100
-done
-
-if ! getent group "$group" > /dev/null 2>&1
+if [ "$1" = "configure" ]
 then
-    echo "Adding new group '$group' ..."
-    groupadd --system "$group"
+    for bin in $bins
+    do
+        update-alternatives --install /usr/bin/"$bin" "$bin" "$bin_path"/"$bin" 100
+    done
+
+    if ! getent group "$group" > /dev/null 2>&1
+    then
+        echo "Adding new group '$group' ..."
+        groupadd --system "$group"
+    fi
+
+    if ! id "$user" > /dev/null 2>&1
+    then
+        echo "Adding new user '$user' with group '$group' ..."
+        useradd --system --no-create-home --gid "$group" --shell /bin/false "$user"
+    fi
 fi
 
-if ! id "$user" > /dev/null 2>&1
+# Only if upstart isn't in charge
+if ! { [ -x /sbin/initctl ] && /sbin/initctl version 2>/dev/null | grep -q upstart; }
 then
-    echo "Adding new user '$user' with group '$group' ..."
-    useradd --system --no-create-home --gid "$group" --shell /bin/false "$user"
+    update-rc.d secureserver-agent defaults > /dev/null || true
 fi
 
-cat <<EOF
+if [ -n "$2" ]
+then
+    action=restart
+else
+    action=start
+fi
 
-#####################################################################
-
-    Before starting a secureserver-agent you need a valid api key    
-    in the configuration file:
-    
-        /etc/secureserver/agent.config
-
-    You can set key by running the following command:
-
-    secureserver-config --set api_key=<your_api_key_here>
-
-#####################################################################
-
-EOF
+service secureserver-agent $action 2>/dev/null || true
 
 exit 0
       __POSTINST
@@ -121,12 +122,13 @@ group="secureserver"
 
 if [ "$1" != "upgrade" ]
 then
+    service secureserver-agent stop || true
     for bin in $bins; do
         update-alternatives --remove "$bin" "$bin_path"/"$bin"
     done
+    echo "Removing user '$user'  ..."
+    userdel "$user" || true
 fi
-
-userdel "$user" || true
 
 exit 0
       __PRERM
