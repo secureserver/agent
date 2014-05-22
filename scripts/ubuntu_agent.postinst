@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-bin_path="#{destdir}"
+bin_path="/opt/secureserver-agent/embedded"
 bins="secureserver-agent secureserver-config"
 user="secureserver"
 group="secureserver"
