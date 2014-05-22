@@ -26,14 +26,21 @@ class SecureserverAgent < FPM::Cookery::Recipe
     build_depends 'rpmdevtools'
   end
 
+  platforms [:ubuntu, :debian] do
+    post_install '../scripts/ubuntu_agent.postinst'
+    pre_uninstall '../scripts/ubuntu_agent.prerm'
+  end
+
+  platforms [:fedora, :redhat, :centos] do
+    post_install '../scripts/rhel_agent.postinst'
+    pre_uninstall '../scripts/rhel_agent.prerm'
+  end
+
   def build
     # Nothing
   end
 
   def install
-    # Set paths to package scripts
-    self.class.post_install builddir('post-install')
-    self.class.pre_uninstall builddir('pre-uninstall')
+    # Nothing
   end
-
 end
