@@ -14,7 +14,7 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="secureserver agent"
 NAME=secureserver-agent
-DAEMON=/opt/secureserver-agent/embedded/secureserver-agent
+DAEMON=/usr/bin/secureserver-agent
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=secureserver

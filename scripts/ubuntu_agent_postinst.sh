@@ -1,0 +1,44 @@
+#!/bin/sh
+set -e
+
+bin_path="#{destdir}"
+bins="secureserver-agent secureserver-config"
+user="secureserver"
+group="secureserver"
+
+if [ "$1" = "configure" ]
+then
+    for bin in $bins
+    do
+        update-alternatives --install /usr/bin/"$bin" "$bin" "$bin_path"/"$bin" 100
+    done
+
+    if ! getent group "$group" > /dev/null 2>&1
+    then
+        echo "Adding new group '$group' ..."
+        groupadd --system "$group"
+    fi
+
+    if ! id "$user" > /dev/null 2>&1
+    then
+        echo "Adding new user '$user' with group '$group' ..."
+        useradd --system --no-create-home --gid "$group" --shell /bin/false "$user"
+    fi
+fi
+
+# Only if upstart isn't in charge
+if ! { [ -x /sbin/initctl ] && /sbin/initctl version 2>/dev/null | grep -q upstart; }
+then
+    update-rc.d secureserver-agent defaults > /dev/null || true
+fi
+
+if [ -n "$2" ]
+then
+    action=restart
+else
+    action=start
+fi
+
+service secureserver-agent $action 2>/dev/null || true
+
+exit 0
