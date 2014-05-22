@@ -34,8 +34,13 @@ if [ "$option" == "--set" ]
 then
     if [ ! "$(echo "$config_keys" | grep -cwm1 "$key")" -eq 0 ]
     then
-        echo -e "\nConfig modified: ${key}=${value}\n"
-        sed -i "s|${key}=.*|${key}=${value}|g" /etc/secureserver/agent.config
+        sed -i "s|${key}=.*|${key}=${value}|g" /etc/secureserver/agent.config 2>/dev/null
+        if [ $? -eq 0 ]
+        then
+            echo -e "\nConfig modified: ${key}=${value}\n"
+        else
+            echo -e "\nERROR: Could not modify configuration. Are you sudo/root?\n"
+        fi
     else
         echo -e "\nKey: $key not found!\n"
         exit 1
