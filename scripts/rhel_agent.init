@@ -1,22 +1,41 @@
 #! /bin/sh
+#
 ### BEGIN INIT INFO
-# Provides:          secureserver
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Provides: secureserver-agent
+# Required-Start: $network $local_fs $remote_fs
+# Required-Stop: $remote_fs
+# Should-Start: $named
+# Should-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
 # Short-Description: Starts the secureserver agent.
 ### END INIT INFO
-
-# Author: secureserver.io
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="secureserver agent"
 NAME=secureserver-agent
-DAEMON=/opt/secureserver-agent/embedded/secureserver-agent
-DAEMON_ARGS=""
+DAEMON=/usr/bin/secureserver-agent
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=secureserver
 GROUP=secureserver
 
+print_message()
+{
+    cat <<EOF
+
+#####################################################################
+
+    Before starting a secureserver-agent you need a valid api key
+    in the configuration file:
+
+        /etc/secureserver/agent.config
+
+    You can set key by running the following command:
+
+    secureserver-config --set api_key=REPLACE_WITH_YOUR_API_KEY
+
+#####################################################################
+
+EOF
+}

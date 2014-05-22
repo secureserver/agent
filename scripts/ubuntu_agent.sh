@@ -5,7 +5,6 @@
 #
 #===============================================================================
 
-# Kill sleep when parent stops
 trap '[ $pid ] && kill $pid' EXIT
 
 # Load the agent configuration file
