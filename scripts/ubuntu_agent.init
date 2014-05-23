@@ -15,7 +15,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="secureserver agent"
 NAME=secureserver-agent
 DAEMON=/usr/bin/secureserver-agent
-DAEMON_CONFIG=/etc/secureserver/agent.config
+CONFIG=/etc/secureserver/agent.config
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=secureserver
@@ -58,7 +58,7 @@ EOF
 do_start()
 {
     # Check if api key is added
-    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$DAEMON_CONFIG") -eq 1 ]
+    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$CONFIG") -eq 1 ]
     then
         print_message
         exit 1
