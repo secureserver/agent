@@ -23,6 +23,8 @@ then
     useradd --system --no-create-home --gid "$group" --shell /bin/false "$user"
 fi
 
+chkconfig --add secureserver-agent
+
 if [ -n "$2" ]
 then
     action=restart

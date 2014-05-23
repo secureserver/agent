@@ -20,7 +20,7 @@ user="secureserver"
 group="secureserver"
 
 # Source function library.
-. /etc/rc.d/init.d/functions
+. /etc/init.d/functions
 
 print_message()
 {
@@ -54,16 +54,15 @@ start()
     if ! [ -f $pidfile ]
     then
         printf "Starting $prog:\t"
-        $exec > /dev/null &
-        pid=$!
+        daemon --user=$user --pidfile=$pidfile "$exec >/dev/null &"
+        pid=$(ps aux | grep [s]ecureserver-agent | awk '{print $2}')
         echo $pid > $pidfile
-        touch $lockfile
-        success
+        retval=$?
         echo
+        [ $retval -eq 0 ] && touch $lockfile
+        return $retval
     else
-        failure
-        echo
-        printf "$pidfile still exists...\n"
+        printf "$prog already running...\n"
         exit 7
     fi
 }
@@ -91,7 +90,7 @@ force_reload()
 
 rh_status()
 {
-    status -p $pidfile $prog
+    status $prog
 }
 
 rh_status_q()
