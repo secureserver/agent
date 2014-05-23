@@ -11,15 +11,16 @@
 # Short-Description: Starts the secureserver agent.
 ### END INIT INFO
 
-PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="secureserver agent"
-NAME=secureserver-agent
-DAEMON=/usr/bin/secureserver-agent
-DAEMON_CONFIG=/etc/secureserver/agent.config
-PIDFILE=/var/run/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
-USER=secureserver
-GROUP=secureserver
+prog="secureserver-agent"
+exec="/usr/bin/$prog"
+config="/etc/secureserver/agent.config"
+pidfile="/var/run/$prog.pid"
+lockfile="/var/lock/subsys/$prog"
+user="secureserver"
+group="secureserver"
+
+# Source function library.
+. /etc/rc.d/init.d/functions
 
 print_message()
 {
@@ -40,3 +41,84 @@ print_message()
 
 EOF
 }
+
+start()
+{
+    # Check if api key is added
+    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$config") -eq 1 ]
+    then
+        print_message
+        exit 1
+    fi
+
+    if ! [ -f $pidfile ]
+    then
+        printf "Starting $prog:\t"
+        $exec > /dev/null &
+        pid=$!
+        echo $pid > $pidfile
+        touch $lockfile
+        success
+        echo
+    else
+        failure
+        echo
+        printf "$pidfile still exists...\n"
+        exit 7
+    fi
+}
+
+stop()
+{
+    echo -n $"Stopping $prog: "
+    killproc -p $pidfile $prog
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile $pidfile
+    return $retval
+}
+
+restart()
+{
+    stop
+    start
+}
+
+force_reload()
+{
+    restart
+}
+
+rh_status()
+{
+    status -p $pidfile $prog
+}
+
+rh_status_q()
+{
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    status)
+        rh_status
+        ;;
+    restart)
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart|force-reload}" >&2
+        exit 3
+        ;;
+esac
