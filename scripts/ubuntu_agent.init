@@ -18,8 +18,8 @@ DAEMON=/usr/bin/secureserver-agent
 CONFIG=/etc/secureserver/agent.config
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
-USER=secureserver
-GROUP=secureserver
+USER=secserv
+GROUP=secserv
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0

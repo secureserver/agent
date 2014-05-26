@@ -16,7 +16,7 @@ exec="/usr/bin/$prog"
 config="/etc/secureserver/agent.config"
 pidfile="/var/run/$prog.pid"
 lockfile="/var/lock/subsys/$prog"
-user="secureserver"
+user="secserv"
 
 # Source function library.
 . /etc/init.d/functions

@@ -3,8 +3,7 @@ set -e
 
 bin_path="/opt/secureserver-agent/embedded"
 bins="secureserver-agent secureserver-config"
-user="secureserver"
-group="secureserver"
+user="secserv"
 
 if [ "$1" != "upgrade" ]
 then

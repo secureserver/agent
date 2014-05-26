@@ -3,8 +3,8 @@ set -e
 
 bin_path="/opt/secureserver-agent/embedded"
 bins="secureserver-agent secureserver-config"
-user="secureserver"
-group="secureserver"
+user="secserv"
+group="secserv"
 
 if [ "$1" = "configure" ]
 then
