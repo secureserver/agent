@@ -17,7 +17,6 @@ config="/etc/secureserver/agent.config"
 pidfile="/var/run/$prog.pid"
 lockfile="/var/lock/subsys/$prog"
 user="secureserver"
-group="secureserver"
 
 # Source function library.
 . /etc/init.d/functions
@@ -55,6 +54,7 @@ start()
     then
         printf "Starting $prog:\t"
         daemon --user=$user --pidfile=$pidfile "$exec >/dev/null &"
+        # Hack to write pid
         pid=$(ps aux | grep [s]ecureserver-agent | awk '{print $2}')
         echo $pid > $pidfile
         retval=$?
