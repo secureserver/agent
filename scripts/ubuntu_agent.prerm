@@ -13,6 +13,8 @@ then
     done
     echo "Removing user '$user' ..."
     userdel "$user" || true
+
+    update-rc.d -f secureserver-agent remove > /dev/null || true
 fi
 
 exit 0
