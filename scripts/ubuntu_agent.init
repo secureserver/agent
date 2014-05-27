@@ -17,6 +17,7 @@ NAME=secureserver-agent
 DAEMON=/usr/bin/secureserver-agent
 CONFIG=/etc/secureserver/agent.config
 LOGFILE=/var/log/secureserver/agent.log
+DAEMON_ARGS="-c $CONFIG -l $LOGFILE"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=secserv
@@ -72,7 +73,7 @@ do_start()
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
                       --exec $DAEMON -c $USER:$USER --test > /dev/null || return 1
     start-stop-daemon --background --start --quiet --make-pidfile --pidfile $PIDFILE \
-                      --exec $DAEMON -c $USER:$USER || return 2
+                      -c $USER:$USER --exec $DAEMON -- $DAEMON_ARGS || return 2
 }
 
 do_stop()

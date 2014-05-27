@@ -14,8 +14,9 @@
 prog="secureserver-agent"
 exec="/usr/bin/$prog"
 config="/etc/secureserver/agent.config"
-pidfile="/var/run/$prog.pid"
 logfile="/var/log/secureserver/agent.log"
+exec_args="-c $config -l $logfile"
+pidfile="/var/run/$prog.pid"
 lockfile="/var/lock/subsys/$prog"
 user="secserv"
 
@@ -59,7 +60,7 @@ start()
     if ! [ -f $pidfile ]
     then
         printf "Starting $prog:\t"
-        daemon --user=$user --pidfile=$pidfile "$exec >/dev/null &"
+        daemon --user=$user --pidfile=$pidfile "$exec $exec_args >/dev/null &"
         # Hack to write pid
         pid=$(ps aux | grep [s]ecureserver-agent | awk '{print $2}')
         echo $pid > $pidfile
