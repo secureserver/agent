@@ -4,38 +4,71 @@ set -e
 bin_path="/opt/secureserver-agent/embedded"
 bins="secureserver-agent secureserver-config"
 user="secserv"
-group="secserv"
+log_dir="/var/log/secureserver"
+prev_version="$2"
 
-if [ "$1" = "configure" ]
-then
-    for bin in $bins
-    do
-        update-alternatives --install /usr/bin/"$bin" "$bin" "$bin_path"/"$bin" 100
-    done
-
-    if ! getent group "$group" > /dev/null 2>&1
+add_system_user()
+{
+    if ! getent group "$user" > /dev/null 2>&1
     then
-        echo "Adding new group '$group' ..."
-        groupadd --system "$group"
+        echo "Adding new group '$user' ..."
+        groupadd --system "$user"
     fi
 
     if ! id "$user" > /dev/null 2>&1
     then
-        echo "Adding new user '$user' with group '$group' ..."
-        useradd --system --no-create-home --gid "$group" --shell /bin/false "$user"
+        echo "Adding new user '$user' with group '$user' ..."
+        useradd --system --no-create-home --gid "$user" --shell /bin/false "$user"
     fi
-fi
+}
 
-# Start the service in runlevels 2345, and stop the service in runlevels 016
-update-rc.d secureserver-agent defaults > /dev/null || true
+create_log_dir()
+{
+    mkdir -p "$log_dir"
+    # Check if user exists
+    if id -u "$user" > /dev/null 2>&1
+    then
+        chown "$user":"$user" "$log_dir"
+    fi
+}
 
-if [ -n "$2" ]
-then
-    action=restart
-else
-    action=start
-fi
+update_alternatives()
+{
+    for bin in $bins
+    do
+        update-alternatives --install /usr/bin/"$bin" "$bin" "$bin_path"/"$bin" 100
+    done
+}
 
-service secureserver-agent $action 2>/dev/null || true
+update_rcd()
+{
+    # Start the service in runlevels 2345, and stop the service in runlevels 016
+    update-rc.d secureserver-agent defaults > /dev/null || true
+}
 
-exit 0
+ss_agent()
+{
+    service secureserver-agent "$1" 2>/dev/null || true
+}
+
+case "$1" in
+    configure)
+        if [ -z "$prev_version" ]
+        then
+            add_system_user
+            create_log_dir
+            update_alternatives
+            update_rcd
+            ss_agent start
+        else
+            ss_agent restart
+        fi
+        ;;
+    triggered|abort-upgrade|abort-deconfigure|abort-remove)
+        :
+        ;;
+    *)
+        echo "Unknown argument: $1"
+        exit 1
+        ;;
+esac
