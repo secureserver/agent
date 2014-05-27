@@ -15,6 +15,7 @@ prog="secureserver-agent"
 exec="/usr/bin/$prog"
 config="/etc/secureserver/agent.config"
 pidfile="/var/run/$prog.pid"
+logfile="/var/log/secureserver/agent.log"
 lockfile="/var/lock/subsys/$prog"
 user="secserv"
 

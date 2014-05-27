@@ -16,6 +16,7 @@ DESC="secureserver agent"
 NAME=secureserver-agent
 DAEMON=/usr/bin/secureserver-agent
 CONFIG=/etc/secureserver/agent.config
+LOGFILE=/var/log/secureserver/agent.log
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=secserv
