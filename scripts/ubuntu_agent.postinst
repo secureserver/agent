@@ -26,12 +26,8 @@ then
     fi
 fi
 
-# Only if upstart isn't in charge
-if ! { [ -x /sbin/initctl ] && /sbin/initctl version 2>/dev/null | grep -q upstart; }
-then
-    # Start the service in runlevels 2345, and stop the service in runlevels 016
-    update-rc.d secureserver-agent defaults > /dev/null || true
-fi
+# Start the service in runlevels 2345, and stop the service in runlevels 016
+update-rc.d secureserver-agent defaults > /dev/null || true
 
 if [ -n "$2" ]
 then
