@@ -41,14 +41,19 @@ print_message()
 EOF
 }
 
-start()
+check_api_key()
 {
-    # Check if api key is added
-    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$config") -eq 1 ]
+    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$CONFIG") -eq 1 ]
     then
         print_message
         exit 1
     fi
+}
+
+start()
+{
+    # Check if api key is added
+    check_api_key
 
     if ! [ -f $pidfile ]
     then
