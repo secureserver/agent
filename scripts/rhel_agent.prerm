@@ -4,17 +4,47 @@ set -e
 bin_path="/opt/secureserver-agent/embedded"
 bins="secureserver-agent secureserver-config"
 user="secserv"
+log_dir="/var/log/secureserver"
+prev_version="$2"
 
-if [ "$1" != "upgrade" ]
-then
-    service secureserver-agent stop || true
-    for bin in $bins; do
-        update-alternatives --remove "$bin" "$bin_path"/"$bin"
-    done
+remove_system_user()
+{
     echo "Removing user '$user' ..."
     userdel "$user" || true
+}
 
+delete_log_dir()
+{
+    rm -rf "$log_dir"
+}
+
+update_alternatives()
+{
+    for bin in $bins
+    do
+        update-alternatives --remove "$bin" "$bin_path"/"$bin"
+    done
+}
+
+update_rcd()
+{
     chkconfig --del secureserver-agent
-fi
+}
 
-exit 0
+ss_agent()
+{
+    service secureserver-agent "$1" 2>/dev/null || true
+}
+
+case "$1" in
+    upgrade)
+        :
+        ;;
+    *)
+        ss_agent stop
+        delete_log_dir
+        remove_system_user
+        update_alternatives
+        update_rcd
+        ;;
+esac
