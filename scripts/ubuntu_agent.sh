@@ -35,7 +35,7 @@ touch "$logfile"
 if [ "$loglevel" = "DEBUG" ]
 then
     set -x
-    exec > $logfile 2>&1
+    exec >> $logfile 2>&1
 fi
 
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
