@@ -32,6 +32,12 @@ done
 # Create log file if not exists
 touch "$logfile"
 
+if [ "$loglevel" = "DEBUG" ]
+then
+    set -x
+    exec > $logfile 2>&1
+fi
+
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
 os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
