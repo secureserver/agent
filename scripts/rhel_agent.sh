@@ -4,11 +4,33 @@
 # MAINTAINER: secureserver.io
 #
 #===============================================================================
-
 trap '[ $pid ] && kill $pid' EXIT
 
+args=("$@")
+
+# Check the number of arguments
+if [ ! "${#args[@]}" -eq 4 ]
+then
+    exit 2
+fi
+
+# Get config and log files path
+for arg in "${!args[@]}"
+do
+    if [ "${args[$arg]}" = "-c" ]
+    then
+        configfile="${args[$arg+1]}"
+    elif [ "${args[$arg]}" = "-l" ]
+    then
+        logfile="${args[$arg+1]}"
+    fi
+done
+
 # Load the agent configuration file
-[ -r /etc/secureserver/agent.config ] && . /etc/secureserver/agent.config
+[ -r "$configfile" ] && . "$configfile"
+
+# Create log file if not exists
+touch "$logfile"
 
 os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')

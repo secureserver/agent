@@ -12,7 +12,7 @@ args=("$@")
 # Get keys from agent config file
 config_keys=$(grep '^[a-z].*' /etc/secureserver/agent.config | cut -d= -f1)
 
-# Check number of arguments
+# Check the number of arguments
 if [ ! "${#args[@]}" -eq 2 ]
 then
     echo -e "\nUSAGE: secureserver-config --set key=value"
