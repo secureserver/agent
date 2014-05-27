@@ -22,7 +22,7 @@ then
         echo " ${key}"
     done
     echo ""
-    exit 1
+    exit 2
 fi
 
 # Get option, key and value parameters
@@ -43,9 +43,7 @@ then
         fi
     else
         echo -e "\nKey: $key not found!\n"
-        exit 1
     fi
 else
     echo -e "\nOption: $option not found!\n"
-    exit 1
 fi
