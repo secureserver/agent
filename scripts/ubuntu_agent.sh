@@ -32,7 +32,7 @@ done
 # Create log file if not exists
 touch "$logfile"
 
-if [ "$loglevel" = "DEBUG" ]
+if [ "$debug" = "true" ]
 then
     set -x
     exec >> $logfile 2>&1
@@ -79,8 +79,14 @@ function send_packages()
 
     if [ -z "$last_request_check" ] || [ "$request_check" != "$last_request_check" ]
     then
-        curl --connect-timeout "$connect_timeout" --max-time "$max_time" \
-             -d "$request" "$service_endpoint" > /dev/null 2>&1
+        response=$(curl -i -SL -w %{http_code} --silent --connect-timeout "$connect_timeout" \
+                        --max-time "$max_time" -d "$request" "$service_endpoint" --output /dev/null)
+        if [ $response -eq 200 ]
+        then
+            echo "$(date "+%Y-%m-%d %H:%M:%S") INFO - $response Data sent successfully" >> $logfile
+        else
+            echo "$(date "+%Y-%m-%d %H:%M:%S") ERROR - $response Something went wrong" >> $logfile
+        fi
         last_request_check="$request_check"
     fi
 }
