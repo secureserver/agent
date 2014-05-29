@@ -91,8 +91,12 @@ function send_packages()
 
     if [ -z "$last_request_check" ] || [ "$request_check" != "$last_request_check" ]
     then
-        response=$(curl -i -SL -w %{http_code} --silent --connect-timeout "$connect_timeout" \
-                        --max-time "$max_time" -d "$request" "$service_endpoint" --output /dev/null)
+        response=$(curl -X POST -iSL -w %{http_code} --silent \
+                        --connect-timeout "$connect_timeout" \
+                        --max-time "$max_time" \
+                        -d "$request" "$service_endpoint" \
+                        -H "Content-Type: application/json" \
+                        --output /dev/null)
 
         if [ $response -eq 200 ]
         then
