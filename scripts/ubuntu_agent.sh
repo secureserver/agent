@@ -40,20 +40,20 @@ fi
 # Redirect stdout and stderr to logfile
 exec >> $logfile 2>&1
 
+machine_id=$(cat /var/lib/dbus/machine-id)
+os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
+os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
+os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
+hostname=$(hostname)
+
 # Logging function: logit ERROR "This is a test"
-logit()
+function logit()
 {
     level=$1
     message=$2
     date=$(date "+%Y-%m-%d %H:%M:%S")
     echo "$date $level - $message"
 }
-
-machine_id=$(cat /var/lib/dbus/machine-id)
-os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
-os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
-os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
-hostname=$(hostname)
 
 function check_packages()
 {
