@@ -35,9 +35,21 @@ touch "$logfile"
 if [ "$debug" = "true" ]
 then
     set -x
-    exec >> $logfile 2>&1
 fi
 
+# Redirect stdout and stderr to logfile
+exec >> $logfile 2>&1
+
+# Logging function: logit ERROR "This is a test"
+logit()
+{
+    level=$1
+    message=$2
+    date=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "$date $level - $message"
+}
+
+machine_id=$(cat /var/lib/dbus/machine-id)
 os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')
 #os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
@@ -63,8 +75,8 @@ function check_packages()
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
-    request=$(printf '{"os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-                       "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
+    request=$(printf '{"machine_id":"%s","os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
+                       "$machine_id" "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
 }
 
 function send_packages()
@@ -77,9 +89,9 @@ function send_packages()
                         --max-time "$max_time" -d "$request" "$service_endpoint" --output /dev/null)
         if [ $response -eq 200 ]
         then
-            echo "$(date "+%Y-%m-%d %H:%M:%S") INFO - $response Data sent successfully" >> $logfile
+            logit INFO "Data sent successfully (Response code: $response)"
         else
-            echo "$(date "+%Y-%m-%d %H:%M:%S") ERROR - $response Something went wrong" >> $logfile
+            logit ERROR "Something went wrong (Response code: $response)"
         fi
         last_request_check="$request_check"
     fi
