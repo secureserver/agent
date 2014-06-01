@@ -40,7 +40,7 @@ fi
 # Redirect stdout and stderr to logfile
 exec >> $logfile 2>&1
 
-machine_id=$(cat /var/lib/dbus/machine-id 2>/dev/null || )
+machine_id=$(cat /var/lib/dbus/machine-id)
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
 hostname=$(hostname)
