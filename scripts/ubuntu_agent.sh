@@ -40,10 +40,9 @@ fi
 # Redirect stdout and stderr to logfile
 exec >> $logfile 2>&1
 
-machine_id=$(cat /var/lib/dbus/machine-id)
+machine_id=$(cat /var/lib/dbus/machine-id 2>/dev/null || )
 os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
 os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
-os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 hostname=$(hostname)
 
 # Logging function: logit ERROR "This is a test"
@@ -81,8 +80,8 @@ function check_packages()
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
-    request=$(printf '{"machine_id":"%s","os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-                       "$machine_id" "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
+    request=$(printf '{"machine_id":"%s","os_name":"%s","os_release":"%s","hostname":"%s","packages":[%s]}\n' \
+                       "$machine_id" "$os_name" "$os_release" "$hostname" "$packages")
 }
 
 function send_packages()

@@ -43,7 +43,6 @@ exec >> $logfile 2>&1
 machine_id=$(cat /var/lib/dbus/machine-id)
 os_name=$(awk -F ' release ' '{print $1}' /etc/redhat-release)
 os_release=$(awk -F ' release ' '{print $2}' /etc/redhat-release | awk '{print $1}')
-#os_codename=$(grep DISTRIB_CODENAME /etc/*release | cut -d= -f2)
 hostname=$(hostname)
 
 # Logging function: logit ERROR "This is a test"
@@ -75,8 +74,8 @@ function check_packages()
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
-    request=$(printf '{"machine_id":"%s","os_name":"%s","os_release":"%s","os_codename":"%s","hostname":"%s","packages":[%s]}\n' \
-                       "$machine_id" "$os_name" "$os_release" "$os_codename" "$hostname" "$packages")
+    request=$(printf '{"machine_id":"%s","os_name":"%s","os_release":"%s","hostname":"%s","packages":[%s]}\n' \
+                       "$machine_id" "$os_name" "$os_release" "$hostname" "$packages")
 }
 
 function send_packages()
