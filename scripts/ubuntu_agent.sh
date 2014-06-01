@@ -100,10 +100,10 @@ function send_packages()
         if [ $response -eq 200 ]
         then
             logit INFO "Data sent successfully (Response code: $response)"
+            last_request_check="$request_check"
         else
             logit ERROR "Something went wrong (Response code: $response)"
         fi
-        last_request_check="$request_check"
     fi
 }
 
