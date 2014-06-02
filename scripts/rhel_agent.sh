@@ -74,8 +74,31 @@ function check_packages()
 
     packages=$(sed 's/},$/}/g' <<< "$packages")
 
-    request=$(printf '{"machine_id":"%s","os_name":"%s","os_release":"%s","hostname":"%s","packages":[%s]}\n' \
-                       "$machine_id" "$os_name" "$os_release" "$hostname" "$packages")
+    request=$(printf '{"machine_id":"%s","report_frequency":"%s","os_name":"%s","os_release":"%s","hostname":"%s","packages":[%s]}\n' \
+                       "$machine_id" "$report_frequency" "$os_name" "$os_release" "$hostname" "$packages")
+}
+
+function send()
+{
+    curl -X POST -iSL -w %{http_code} --silent \
+                 --connect-timeout "$connect_timeout" \
+                 --max-time "$max_time" \
+                 -d "$1" "$service_endpoint" \
+                 -H "Content-Type: application/json" \
+                 --output /dev/null
+}
+
+function send_ping()
+{
+    ping_request=$(printf '{"machine_id":"%s","report_frequency":"%s"}\n' "$machine_id" "$report_frequency")
+    response=$(send $ping_request)
+
+    if [ $response -eq 200 ]
+    then
+        logit INFO "Ping sent successfully"
+    else
+        logit ERROR "Something went wrong while sending ping (Response code: $response)"
+    fi
 }
 
 function send_packages()
@@ -84,20 +107,17 @@ function send_packages()
 
     if [ -z "$last_request_check" ] || [ "$request_check" != "$last_request_check" ]
     then
-        response=$(curl -X POST -iSL -w %{http_code} --silent \
-                        --connect-timeout "$connect_timeout" \
-                        --max-time "$max_time" \
-                        -d "$request" "$service_endpoint" \
-                        -H "Content-Type: application/json" \
-                        --output /dev/null)
+        response=$(send $request)
 
         if [ $response -eq 200 ]
         then
-            logit INFO "Data sent successfully (Response code: $response)"
+            logit INFO "Packages data sent successfully"
             last_request_check="$request_check"
         else
-            logit ERROR "Something went wrong (Response code: $response)"
+            logit ERROR "Something went wrong while sending packages data (Response code: $response)"
         fi
+    else
+        send_ping
     fi
 }
 
