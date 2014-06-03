@@ -48,7 +48,7 @@ EOF
 
 check_api_key()
 {
-    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$CONFIG") -eq 1 ]
+    if [ $(grep -c "REPLACE_WITH_YOUR_API_KEY" "$config") -eq 1 ]
     then
         print_message
         exit 1
