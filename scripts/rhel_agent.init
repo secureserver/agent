@@ -1,5 +1,8 @@
 #! /bin/sh
 #
+# chkconfig: 2345 20 80
+# description: Starts the secureserver agent.
+#
 ### BEGIN INIT INFO
 # Provides: secureserver-agent
 # Required-Start: $network $local_fs $remote_fs
