@@ -12,13 +12,13 @@ add_system_user()
     if ! getent group "$user" > /dev/null 2>&1
     then
         echo "Adding new group '$user' ..."
-        groupadd --system "$user"
+        groupadd -r "$user"
     fi
 
     if ! id "$user" > /dev/null 2>&1
     then
         echo "Adding new user '$user' with group '$user' ..."
-        useradd --system --no-create-home --gid "$user" --shell /bin/false "$user"
+        useradd -r -M --gid "$user" --shell /bin/false "$user"
     fi
 }
 
