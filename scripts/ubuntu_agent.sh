@@ -6,6 +6,8 @@
 #===============================================================================
 trap '[ $pid ] && kill $pid' EXIT
 
+set -o pipefail
+
 args=("$@")
 
 # Check the number of arguments
@@ -41,8 +43,10 @@ fi
 exec >> $logfile 2>&1
 
 machine_id=$(cat /var/lib/dbus/machine-id)
-os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2)
-os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2)
+os_name=$(grep DISTRIB_ID /etc/*release | cut -d= -f2 2>/dev/null \
+               || cat /etc/issue | awk '{print $1}')
+os_release=$(grep DISTRIB_RELEASE /etc/*release | cut -d= -f2 2>/dev/null \
+                  || cat /etc/issue | awk '{print $3}')
 hostname=$(hostname)
 
 # Logging function: logit ERROR "This is a test"
