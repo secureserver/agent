@@ -61,7 +61,7 @@ function logit()
 function check_update()
 {
     update_success_stamp=/var/lib/apt/periodic/update-success-stamp
-    
+ 
     if [ ! -f "$update_success_stamp" ]
     then
         logit WARNING "Could not check last update time. Run as root: apt-get update"
