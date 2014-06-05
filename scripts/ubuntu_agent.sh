@@ -58,15 +58,25 @@ function logit()
     echo "$date $level - $message"
 }
 
+function check_update()
+{
+    update_success_stamp=/var/lib/apt/periodic/update-success-stamp
+    
+    if [ ! -f "$update_success_stamp" ]
+    then
+        logit WARNING "Could not check last update time. Run as root: apt-get update"
+    else
+        current_time=$(date +%s)
+        last_update=$(stat -c %Y "$update_success_stamp")
+        if [ $(( current_time - last_update )) -ge 86400 ]
+        then
+            logit WARNING "Last update success stamp older than 24h. Run as root: apt-get update"
+        fi
+    fi
+}
+
 function check_packages()
 {
-    #last_update=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
-    #current_time=$(date +%s)
-    #if [ $(( current_time - last_update )) -ge 86400 ]
-    #then
-        #apt-get -qq update
-    #fi
-
     IFS=$'\n'
     pkg_upgrade=$(apt-get upgrade -s | grep ^Inst)
     packages=()
@@ -134,6 +144,7 @@ function send_packages()
 # Infinite loop which will keep the agent daemonized
 while true
 do
+    check_update
     check_packages
     send_packages
     sleep "$report_frequency" & pid=$!
