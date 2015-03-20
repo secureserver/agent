@@ -84,8 +84,8 @@ check_packages() {
 
   packages=$(sed 's/},$/}/g' <<< "$packages")
 
-  request=$(printf '{"machine_id":"%s","report_frequency":"%s","os_name":"%s","os_release":"%s","hostname":"%s","packages":[%s]}\n' \
-                     "$machine_id" "$report_frequency" "$os_name" "$os_release" "$hostname" "$packages")
+  request=$(printf '{"api_key":"%s","machine_id":"%s","report_frequency":"%s","os_name":"%s","os_release":"%s","hostname":"%s","packages":[%s]}\n' \
+                     "$api_key" "$machine_id" "$report_frequency" "$os_name" "$os_release" "$hostname" "$packages")
 }
 
 send() {
